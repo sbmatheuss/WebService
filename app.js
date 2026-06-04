@@ -3,9 +3,8 @@ const app = express()
 const port = 3001
 const livros = require('./livros')
 
-app.use('/livros', livros) // identificação da rota e da const(require) associada
-
 app.use(express.json());
+app.use('/livros', livros) // identificação da rota e da const(require) associada
 app.use(log)
 
 app.get('/', (req, res) => {
