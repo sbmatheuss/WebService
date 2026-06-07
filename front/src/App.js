@@ -10,7 +10,7 @@ const App = () => {
     <MenuSuperior />
     <Routes>
       <Route path="/" element={<InclusaoLivros />}/>
-      <Route path="manut" element={<ManutencaoLivros />}/>
+      <Route path="/lista" element={<ManutencaoLivros />}/>
       <Route path="resumo" element={<ResumoLivros />}/>
     </Routes>
     </>

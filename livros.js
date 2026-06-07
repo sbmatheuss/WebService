@@ -3,8 +3,6 @@ const router = express.Router();
 const cors = require("cors")
 router.use(cors())
 const dbKnex = require("./data/db_config"); // dados de conexão com o banco de dados
-const dbknex = require("./data/db_config");
-const { default: knex } = require("knex");
 
 
 // método get usado para consulta
@@ -33,7 +31,7 @@ router.post('/', async(req, res) => {
     // caso ocorra algum erro na inclusão, o programa irá capturar (catch) o erro
     try {
         // insert, faz a inserção na tabela livros (e retorna o id do registro inserido)
-        const novo = await dbknex("livros").insert({titulo, autor, ano, preco, foto})
+        const novo = await dbKnex("livros").insert({titulo, autor, ano, preco, foto})
         res.status(201).json({id: novo[0]}) // status code indica Create
     } catch(error){
         res.status(400).json({msg: error.message}) // retorna status de erro e msg
@@ -48,7 +46,7 @@ router.put("/:id", async(req, res) => {
 
     try{
         // altera o campo preco, no registro cuho id coincidir com o parâmetro passado
-    await dbknex("livros").update({preco}).where("id", id);
+        await dbKnex("livros").update({preco}).where("id", id);
     res.status(200).json() // status code indica OK
     } catch(error) {
         res.status(400).json({msg: error.message}) // retorna status de erro e msg
@@ -59,7 +57,7 @@ router.put("/:id", async(req, res) => {
 router.delete("/:id", async(req, res) => {
     const {id} = req.params; // id do registro a ser excluído
     try {
-        await dbknex("livros").del().where({id})
+        await dbKnex("livros").del().where({id})
         res.status(200).json() // statusCode indica OK
     } catch(error) {
         res.status(400).json({msg: error.message}) // retorna status de erro e msg
@@ -86,7 +84,7 @@ router.get("/filtro/:palavra", async(req, res) => {
 router.get("/dados/resumo", async(req, res) => {
     try {
         // métodos que podem ser utilizados para obter dados estatísticos da tabela
-        const consula = await dbKnex("livros")
+        const consulta = await dbKnex("livros")
         .count({num: "*"})
         .sum({soma: "preco"})
         .max({maior: "preco"})

@@ -4,11 +4,12 @@ const port = 3001
 const livros = require('./livros')
 
 app.use(express.json());
-app.use('/livros', livros) // identificação da rota e da const(require) associada
+app.use(express.static('public'))
 app.use(log)
+app.use('/livros', livros) // identificação da rota e da const(require) associada
 
 app.get('/', (req, res) => {
-
+    res.send('API de Livros - WebService')
 })
 
 app.get('/cap12', (req, res) => {
