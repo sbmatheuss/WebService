@@ -1,8 +1,9 @@
 const express = require('express')
 const cors = require('cors')
 const path = require('path')
+const fs = require('fs')
 const app = express()
-const port = 3001
+const port = process.env.PORT || 3001
 const livros = require('./livros')
 
 app.use(cors())
@@ -10,31 +11,34 @@ app.use(express.json());
 app.use(log)
 app.use('/livros', livros)
 
-// serve os arquivos estáticos do frontend buildado
-app.use(express.static(path.join(__dirname, 'front', 'build')))
+const frontBuild = path.join(__dirname, 'front', 'build')
+if (fs.existsSync(frontBuild)) {
+    app.use(express.static(frontBuild))
+}
 app.use(express.static('public'))
-
-// rotas auxiliares
-app.get('/cap12', (req, res) => {
-    res.send('<h2>Capítulo 12: Introdução ao Express <h2/>')
-})
-
-app.post('/filmes', (req, res) => {
-    const {titulo, genero} = req.body
-    res.send(`Filme: ${titulo} - Gênero: ${genero}, recebido...`)
-})
-
-app.get('/transfere', log, (req, res) => {
-    res.send("Ok! Valor transferio com sucesso...")
-})
 
 // catch-all: qualquer rota não-API serve o index.html do React
 app.use((req, res) => {
-    res.sendFile(path.join(__dirname, 'front', 'build', 'index.html'))
+    const indexHtml = path.join(frontBuild, 'index.html')
+    if (fs.existsSync(indexHtml)) {
+        res.sendFile(indexHtml)
+    } else {
+        res.status(200).send(`
+            <h1>API de Livros</h1>
+            <p>Servidor rodando.</p>
+            <p>Para acessar o frontend, execute <code>npm start</code> na raiz do projeto.</p>
+        `)
+    }
+})
+
+// tratador de erros global
+app.use((err, req, res, next) => {
+    console.error('ERRO:', err.message)
+    res.status(500).json({ msg: err.message })
 })
 
 function log (req, res, next){
-    console.log(`............... Acessado em ${new Date()}`)
+    console.log(`${req.method} ${req.url} em ${new Date().toLocaleString('pt-BR')}`)
     next();
 }
 
