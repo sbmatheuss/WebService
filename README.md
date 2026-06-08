@@ -38,26 +38,30 @@ WebService/
 
 ## Como rodar
 
-### 1. Backend
+### Produção (tudo em uma única porta)
 
 ```bash
 npm install
+cd front && npm install && cd ..
 npx knex migrate:latest
 npx knex seed:run
-node app.js
-```
-
-Servidor em `http://localhost:3001`.
-
-### 2. Frontend
-
-```bash
-cd front
-npm install
 npm start
 ```
 
-Aplicação em `http://localhost:3000`.
+Acesse em `http://localhost:3001` — frontend + API na mesma porta.
+
+### Desenvolvimento (hot reload)
+
+```bash
+npm install
+cd front && npm install && cd ..
+npx knex migrate:latest
+npx knex seed:run
+npm run dev
+```
+
+- Backend com `nodemon` (auto-restart) em `http://localhost:3001`
+- Frontend React com hot reload em `http://localhost:3000` (proxy automático para API)
 
 ## API
 

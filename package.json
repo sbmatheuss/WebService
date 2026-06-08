@@ -4,6 +4,9 @@
   "description": "",
   "main": "app.js",
   "scripts": {
+    "build-front": "cd front && npm run build",
+    "start": "npm run build-front && node app.js",
+    "dev": "concurrently \"nodemon app.js\" \"cd front && npm start\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -25,6 +28,7 @@
     "sqlite3": "^6.0.1"
   },
   "devDependencies": {
+    "concurrently": "^10.0.3",
     "nodemon": "^3.1.14"
   }
 }

@@ -22,7 +22,8 @@ const InclusaoLivros = () => {
             }, 500);
             reset({titulo: "", autor: "", foto: "", ano: "", preco: ""})
         } catch(error) {
-            setAviso(`Erro... Livro não cadastrado: ${error}`)
+            const msg = error.response ? `${error.response.status}: ${error.response.data.msg || error.message}` : error.message
+            setAviso(`Erro ao cadastrar: ${msg}`)
         }
     }
 
@@ -59,7 +60,7 @@ const InclusaoLivros = () => {
                 <input type="submit" className="btn btn-primary mt-3" value="Enviar"/>
                 <input type="reset" className="btn btn-danger mt-3 ms-3" value="Limpar"/>
             </form>
-            <div className={aviso.startsWith("Ok!") ? "alert alert-sucess" : aviso.startsWith("Erro") ? "alert alert-danger" : ""}>{aviso}</div>
+            <div className={aviso.startsWith("Ok!") ? "alert alert-success" : aviso.startsWith("Erro") ? "alert alert-danger" : ""}>{aviso}</div>
         </div>
     )
 }

@@ -1,7 +1,5 @@
-const express = require("express") // pacotes a serem utilizados
+const express = require("express")
 const router = express.Router();
-const cors = require("cors")
-router.use(cors())
 const dbKnex = require("./data/db_config"); // dados de conexão com o banco de dados
 
 

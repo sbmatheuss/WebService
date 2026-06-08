@@ -13,7 +13,8 @@ const ManutencaoLivros = () => {
         const lista = await inAxios.get("livros")
         setLivros(lista.data)
     } catch(error) {
-        alert(`Erro... Não foi possível obter os dados: ${error}`)
+        const msg = error.response ? `${error.response.status}: ${error.response.data.msg || error.message}` : error.message
+        alert(`Erro ao obter os dados: ${msg}`)
     }
    }
 
@@ -29,7 +30,8 @@ const ManutencaoLivros = () => {
         ? setLivros(lista.data)
         : alert("Não há livros com a palavra-chave pesquisada...")
     } catch(error){
-        alert(`Erro... Não foi possível obter os dados: ${error}`)
+        const msg = error.response ? `${error.response.status}: ${error.response.data.msg || error.message}` : error.message
+        alert(`Erro na pesquisa: ${msg}`)
     }
    }
 
@@ -40,7 +42,8 @@ const ManutencaoLivros = () => {
         await inAxios.delete(`livros/${id}`)
         setLivros(livros.filter((livro) => livro.id !== id))
     } catch(error) {
-        alert(`Erro... Não foi possível excluir este livro: ${error}`)
+        const msg = error.response ? `${error.response.status}: ${error.response.data.msg || error.message}` : error.message
+        alert(`Erro ao excluir: ${msg}`)
     }
    }
 
@@ -57,7 +60,8 @@ const ManutencaoLivros = () => {
         livrosAlteracao[index].preco = novoPreco
         setLivros(livrosAlteracao)
     } catch (error) {
-        alert(`Erro... Não foi possível alterar o preço: ${error}`)
+        const msg = error.response ? `${error.response.status}: ${error.response.data.msg || error.message}` : error.message
+        alert(`Erro ao alterar: ${msg}`)
     }
    }
 

@@ -23,7 +23,8 @@ const ResumoLivros = () => {
             )
             setGrafico(arrayGrafico)
         } catch(error) {
-            alert(`Erro... Não foi possível obter os dados: ${error}`)
+            const msg = error.response ? `${error.response.status}: ${error.response.data.msg || error.message}` : error.message
+            alert(`Erro ao obter dados: ${msg}`)
         }
     }
 
