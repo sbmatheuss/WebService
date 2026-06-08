@@ -42,6 +42,10 @@ function log (req, res, next){
     next();
 }
 
-app.listen(port, () => {
-    console.log(`Servidor rodando em http://localhost:${port}`)
-})
+module.exports = app
+
+if (!process.env.VERCEL) {
+    app.listen(port, () => {
+        console.log(`Servidor rodando em http://localhost:${port}`)
+    })
+}

@@ -11,7 +11,12 @@ const ManutencaoLivros = () => {
    const obterLista = async () => {
     try{
         const lista = await inAxios.get("livros")
-        setLivros(lista.data)
+        if (Array.isArray(lista.data)) {
+            setLivros(lista.data)
+        } else {
+            setLivros([])
+            alert("Resposta inesperada da API")
+        }
     } catch(error) {
         const msg = error.response ? `${error.response.status}: ${error.response.data.msg || error.message}` : error.message
         alert(`Erro ao obter os dados: ${msg}`)

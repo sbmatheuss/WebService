@@ -6,82 +6,16 @@ const dbKnex = require("./data/db_config"); // dados de conexão com o banco de 
 // método get usado para consulta
 router.get('/', async (req, res) => {
     try{
-        // obtém os livros 
         const livros = await dbKnex("livros").orderBy("id", "desc")
         res.status(200).json(livros)
     } catch(error){
-        res.status(400).json({msg: error.message}) // retorna status de erro e msg
+        res.status(400).json({msg: error.message})
     }
 })
-
-
-// Post -> usado para inclusão
-router.post('/', async(req, res) => {
-    // faz a desestruturação dos dados recebidos no corpo da requisição
-    const {titulo, autor, ano, preco, foto} = req.body
-
-    // se algum dos campos não foi passado, irá enviar uma mensagem de erro e retornar
-    if(!titulo || !autor || !ano || !preco || !foto){
-        res.status(400).json({ msg: "Enviar titulo, autor, ano, preco, e foto do livro"})
-        return
-    }
-
-    // caso ocorra algum erro na inclusão, o programa irá capturar (catch) o erro
-    try {
-        // insert, faz a inserção na tabela livros (e retorna o id do registro inserido)
-        const novo = await dbKnex("livros").insert({titulo, autor, ano, preco, foto})
-        res.status(201).json({id: novo[0]}) // status code indica Create
-    } catch(error){
-        res.status(400).json({msg: error.message}) // retorna status de erro e msg
-    }
-})
-
-
-// Put -> usado para alteração. id indica o registro a ser alterado
-router.put("/:id", async(req, res) => {
-    const id = req.params.id; // ou const {id} = req.params
-    const {preco} = req.body // campo a ser alterado
-
-    try{
-        // altera o campo preco, no registro cuho id coincidir com o parâmetro passado
-        await dbKnex("livros").update({preco}).where("id", id);
-    res.status(200).json() // status code indica OK
-    } catch(error) {
-        res.status(400).json({msg: error.message}) // retorna status de erro e msg
-    }
-});
-
-// Delete -> usado para exclusão
-router.delete("/:id", async(req, res) => {
-    const {id} = req.params; // id do registro a ser excluído
-    try {
-        await dbKnex("livros").del().where({id})
-        res.status(200).json() // statusCode indica OK
-    } catch(error) {
-        res.status(400).json({msg: error.message}) // retorna status de erro e msg
-    }
-})
-
-
-// filtro por titulo ou autor
-router.get("/filtro/:palavra", async(req, res) => {
-    const palavra = req.params.palavra; // palavra do título ou autor a pesquisar
-    try{
-        // para filtrar registros, utliza-se .where(), com suas variantes
-        const livros = await dbKnex("livros")
-        .where("titulo", "like", `%${palavra}%`)
-        .orWhere("autor", "like", `%${palavra}%`);
-        res.status(200).json(livros); // retorna statusCODE OK e os dados
-    } catch(error) {
-        res.status(400).json({msg: error.message}) // retorna status de erro e msg
-    }
-})
-
 
 // Resumo de cadastro de livros
 router.get("/dados/resumo", async(req, res) => {
     try {
-        // métodos que podem ser utilizados para obter dados estatísticos da tabela
         const consulta = await dbKnex("livros")
         .count({num: "*"})
         .sum({soma: "preco"})
@@ -90,19 +24,72 @@ router.get("/dados/resumo", async(req, res) => {
         const {num, soma, maior, media} = consulta[0]
         res.status(200).json(({num, soma, maior, media: Number(media.toFixed(2))}))
     } catch(error){
-        res.status(400).json({msg: error.message}) // retorna satus de erro e msg
+        res.status(400).json({msg: error.message})
     }
 })
 
 // Soma dos preços, agrupados por ano
 router.get("/dados/grafico", async(req, res) => {
     try{
-        // obtém ano e soma do preco dos livros(com nome total), agrupados por ano
         const totalPorAno = await dbKnex("livros").select("ano")
         .sum({total: "preco"}).groupBy("ano")
         res.status(200).json(totalPorAno)
     } catch(error) {
-        res.status(400).json({msg: error.message}) // retorna status de erro e msg
+        res.status(400).json({msg: error.message})
+    }
+})
+
+// filtro por titulo ou autor
+router.get("/filtro/:palavra", async(req, res) => {
+    const palavra = req.params.palavra;
+    try{
+        const livros = await dbKnex("livros")
+        .where("titulo", "like", `%${palavra}%`)
+        .orWhere("autor", "like", `%${palavra}%`);
+        res.status(200).json(livros);
+    } catch(error) {
+        res.status(400).json({msg: error.message})
+    }
+})
+
+// Post -> usado para inclusão
+router.post('/', async(req, res) => {
+    const {titulo, autor, ano, preco, foto} = req.body
+
+    if(!titulo || !autor || !ano || !preco || !foto){
+        res.status(400).json({ msg: "Enviar titulo, autor, ano, preco, e foto do livro"})
+        return
+    }
+
+    try {
+        const novo = await dbKnex("livros").insert({titulo, autor, ano, preco, foto})
+        res.status(201).json({id: novo[0]})
+    } catch(error){
+        res.status(400).json({msg: error.message})
+    }
+})
+
+// Put -> usado para alteração
+router.put("/:id", async(req, res) => {
+    const id = req.params.id;
+    const {preco} = req.body
+
+    try{
+        await dbKnex("livros").update({preco}).where("id", id);
+    res.status(200).json()
+    } catch(error) {
+        res.status(400).json({msg: error.message})
+    }
+});
+
+// Delete -> usado para exclusão
+router.delete("/:id", async(req, res) => {
+    const {id} = req.params;
+    try {
+        await dbKnex("livros").del().where({id})
+        res.status(200).json()
+    } catch(error) {
+        res.status(400).json({msg: error.message})
     }
 })
 

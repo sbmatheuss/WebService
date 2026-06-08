@@ -25,6 +25,9 @@
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "knex": "^3.2.10",
+    "pg": "^8.13.1"
+  },
+  "optionalDependencies": {
     "sqlite3": "^6.0.1"
   },
   "devDependencies": {

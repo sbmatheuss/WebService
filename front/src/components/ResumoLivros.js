@@ -15,12 +15,12 @@ const ResumoLivros = () => {
             setResumo(dadosResumo.data)
 
             const dadosGrafico = await inAxios.get("livros/dados/grafico")
-            // cria um array e adiciona a primeiro linha
             const arrayGrafico = [["Ano", "R$ Total"]]
-            // percorre cada linha do JSON e adiciona ao array
-            dadosGrafico.data.map((dado) => 
-            arrayGrafico.push([dado.ano.toString(), dado.total])
-            )
+            if (Array.isArray(dadosGrafico.data)) {
+                dadosGrafico.data.map((dado) =>
+                    arrayGrafico.push([dado.ano.toString(), dado.total])
+                )
+            }
             setGrafico(arrayGrafico)
         } catch(error) {
             const msg = error.response ? `${error.response.status}: ${error.response.data.msg || error.message}` : error.message
